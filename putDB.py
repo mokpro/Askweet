@@ -9,7 +9,30 @@ def connect():
 	client = MongoClient('localhost', 27017)
 	db = client['Tweets']
 	return client,db
+	
+def read_tweets_file(filename):
+	# Read the tweets file and generate a list of dictionaries with keys as follows
+	# dictionary keys ---> 'tweet_id', 'tweet', 'language'
 
+	print "Reading tweets file"
+	infile = open(filename,"r")
+	data = infile.read().split('\n')[:-1]
+	tweets = []
+
+	for temp in data:
+		try:
+			item = json.loads(temp)
+			#print item
+			tweet = item["text"]
+			ids = item["id"]
+			lang = item["lang"]
+			tweets.append({'tweet_id':ids,'tweet':tweet,'language':lang})
+		except:
+			continue
+
+	print len(tweets), "Extracted"
+	return tweets
+	
 def write_to_csv():
 	infile = open("data.json","r")
 	data = json.load(infile)
@@ -58,6 +81,23 @@ def write_to_db():
 		tweets = db.tweets.insert(item)
 		
 	print "Done  putting in mongodb" 
+
+def tweet_analyzer(tweets):
+    qwords = set(['who', 'what', 'when', 'where', 'why', 'how', 'do', 'is', 'could', 'can', "can't", 'cant', 'would', "wouldn't", "wouldnt", 'should', "shouldn't", "shouldnt", 'did', 'will', 'has', 'have', "won't", 'does', 'wont', 'doesnt', "doesn\'t", 'had', 'are'])
+    data = []
+    count = 0
+    for item in tweets:
+        if '?' in item['tweet']:
+            data.append(item['tweet'])
+            continue
+        temp = item['tweet'].lower().split()
+        while(temp[0][0] == '@' or temp[0] == 'rt' or temp[0][0] == '#' ):
+            temp = temp[1:]
+        for word in qwords:
+            if word in temp[0]:
+                data.append(temp)
+                break
+    print len(data)
 
 if __name__ == "__main__":
 	write_to_csv()
