@@ -9,7 +9,7 @@ def connect():
 	client = MongoClient('localhost', 27017)
 	db = client['Tweets']
 	return client,db
-	
+
 def read_tweets_file(filename):
 	# Read the tweets file and generate a list of dictionaries with keys as follows
 	# dictionary keys ---> 'tweet_id', 'tweet', 'language'
@@ -32,14 +32,14 @@ def read_tweets_file(filename):
 
 	print len(tweets), "Extracted"
 	return tweets
-	
-def write_to_csv():
-	infile = open("data.json","r")
-	data = json.load(infile)
+
+def write_to_csv(data):
+	#infile = open("data-bala.json","r")
+	#data = json.load(infile)
 	count = 0
 	non_eng_count = 0
 	q_count = 0
-	with open('data.csv', 'wb') as csvfile:
+	with open('data-bala.csv', 'wb') as csvfile:
 		tweet_writer = csv.writer(csvfile, delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
 		tweet_writer.writerow(['tweet_id', 'tweet_original','tweet_clean','language','has_question_word','question_word'])
 		for item in data:
@@ -64,7 +64,7 @@ def write_to_csv():
 				non_eng_count+=1
 		print "count:",count
 		print "q_count:",q_count
-				
+
 def clean_the_tweet_text(raw_tweet):
 	clean_tweet = raw_tweet.lower().encode("utf-8")
 	regex_form = '^rt\s+|@\w+:*|https?://[\w\.\/]*'
@@ -75,12 +75,12 @@ def write_to_db():
 	client, db = connect()
 	infile = open("data.json","r")
 	data = json.load(infile)
-	print "Got Tweets, putting in mongodb" 
-	
+	print "Got Tweets, putting in mongodb"
+
 	for item in data:
 		tweets = db.tweets.insert(item)
-		
-	print "Done  putting in mongodb" 
+
+	print "Done  putting in mongodb"
 
 def tweet_analyzer(tweets):
     qwords = set(['who', 'what', 'when', 'where', 'why', 'how', 'do', 'is', 'could', 'can', "can't", 'cant', 'would', "wouldn't", "wouldnt", 'should', "shouldn't", "shouldnt", 'did', 'will', 'has', 'have', "won't", 'does', 'wont', 'doesnt', "doesn\'t", 'had', 'are'])
@@ -100,4 +100,5 @@ def tweet_analyzer(tweets):
     print len(data)
 
 if __name__ == "__main__":
-	write_to_csv()
+	data = read_tweets_file("tweets_file_apr27.txt")
+	write_to_csv(data)
