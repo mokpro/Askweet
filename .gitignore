@@ -1,0 +1,4 @@
+*.~lock.data-bala.csv#
+*.~lock.data.csv#
+*.csv
+*.txt
