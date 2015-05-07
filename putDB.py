@@ -100,5 +100,5 @@ def tweet_analyzer(tweets):
     print len(data)
 
 if __name__ == "__main__":
-	data = read_tweets_file("tweets_file_apr27.txt")
+	data = read_tweets_file("bala.txt")
 	write_to_csv(data)
