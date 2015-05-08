@@ -12,9 +12,12 @@ def run_svm(feature, labels):
 
     X = feature.values()
     Y = labels
-    
-    classifier = svm.SVR(kernel='linear')
-    classifier.fit(X[:1000], Y[:1000])
+    X_train, X_test, y_train, y_test = cross_validation.train_test_split( X[:5000], Y[:5000], test_size=0.3, random_state=0)
+
+    clf = svm.SVC(kernel='linear', C=1).fit(X_train, y_train)
+    print clf.score(X_test, y_test)
+    #classifier = svm.SVR(kernel='linear')
+    #classifier.fit(X[:1000], Y[:1000])
     print " the predictions"
     """
     #predict for the test data
