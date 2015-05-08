@@ -114,6 +114,7 @@ class LexicalFeatures:
         for index, item in enumerate(self.features):
             self.featureIndex[item] = index
 
+        infile.close()
         print "Finished composing the Lexical Features"
 
 
