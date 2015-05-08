@@ -2,3 +2,4 @@
 *.~lock.data.csv#
 *.csv
 *.txt
+*.json
