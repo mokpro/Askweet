@@ -60,7 +60,7 @@ def get_all_pos_words(tagged_tweets):
 	'''
 	pos_words = []
 	for tweet_id in tagged_tweets:
-		pos_words.extend(tagged_tweets[tweet_id])
+		pos_words.extend(tagged_tweets[tweet_id][u'tags'])
 	# print 'POS words:',len(pos_words)
 	return pos_words
 
@@ -94,13 +94,13 @@ def get_wordnet_tagged_tweets(tagged_tweets):
 	# print tagged_tweets
 	wordnet_tagged_tweets = {}
 	count = 0
-	for index, pos_list in tagged_tweets.iteritems():
+	for index, pos_dict in tagged_tweets.iteritems():
 		count+=1
 		if count%1000 == 0:
 			print '\ttweet count:',count
 		tweet_syn = []
 		tweet_hyp = []
-		filtered_pos_list = get_final_pos_words(pos_list)
+		filtered_pos_list = get_final_pos_words(pos_dict[u'tags'])
 		# print 'filtered_pos_list',len(filtered_pos_list)
 		for pos_tuple in filtered_pos_list:
 			# print pos_tuple
@@ -108,7 +108,9 @@ def get_wordnet_tagged_tweets(tagged_tweets):
 			tweet_syn.extend(temp_syn)
 			tweet_hyp.extend(tweet_hyp)
 		temp_features = list(set(temp_syn+temp_hyp))
-		wordnet_tagged_tweets[index] = temp_features
+		wordnet_tagged_tweets[index] = {'features':temp_features,'is_question':pos_dict[u'is_question'], 'is_answerable':pos_dict[u'is_answerable']}
+		# print wordnet_tagged_tweets
+		# break
 	# print 'len:',len(wordnet_tagged_tweets.keys())
 	return wordnet_tagged_tweets
 
@@ -126,17 +128,19 @@ def get_final_tweet_feature_vector(wordnet_tagged_tweets, wordnet_features):
 	for index,w_feature in enumerate(wordnet_features):
 		wordnet_feature_dict[w_feature] = index
 
-	for index, wordnet_values in wordnet_tagged_tweets.iteritems():
+	for index, wordnet_dict in wordnet_tagged_tweets.iteritems():
+		# print wordnet_dict
 		count+=1
 		# print wordnet_values
 		if count%1000 == 0:
 			print '\ttweet:',count
 		tweet_features = [0]*len(wordnet_features)
 		# print tweet_features
+		wordnet_values = wordnet_dict['features']
 		for w_val in wordnet_values:
 			tweet_features[wordnet_feature_dict[w_val]] = 1
 		# print 'sum:',sum(tweet_features)
-		final_tweet_vector[index] = tweet_features
+		final_tweet_vector[index] = {'features':tweet_features,'is_question':wordnet_dict[u'is_question'],'is_answerable':wordnet_dict[u'is_answerable']}
 	# print final_tweet_vector
 	return final_tweet_vector
 
@@ -148,7 +152,7 @@ def process_tweets():
 		-	Check agains global wordnet features and mark as 1 if present
 	'''
 
-	tagged_file = open("tweet_tags.json","r")
+	tagged_file = open("tweet_tags_15k.json","r")
 	tagged_tweets = json.load(tagged_file)
 	tagged_file.close()
 	# print tagged_tweets
@@ -158,7 +162,8 @@ def process_tweets():
 	wordnet_tagged_tweets = get_wordnet_tagged_tweets(tagged_tweets)
 	final_tweet_vector = get_final_tweet_feature_vector(wordnet_tagged_tweets, wordnet_features)
 
-	wordnet_output = open('wordnet_tags.json','w')
+	print "Writing into file..."
+	wordnet_output = open('wordnet_tags_15k.json','w')
 	json.dump(final_tweet_vector,wordnet_output)
 	wordnet_output.close()
 
