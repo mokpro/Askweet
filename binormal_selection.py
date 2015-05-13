@@ -42,7 +42,8 @@ def count_metrics(feature_dict, label_type, bns_filename):
 
     np_labels = np.array(tweet_labels)
     for i in xrange(num_features):
-        print 'Calculating',i,'of',num_features,'...'
+        if i%1000 == 0:
+            print 'Calculating',i,'of',num_features,'...'
         vals = [features[i] for features in tweet_features]
         # print vals
         np_vals = np.array(vals)
@@ -53,6 +54,8 @@ def count_metrics(feature_dict, label_type, bns_filename):
 
     bns_features = {}
     for i in xrange(num_features):
+        if i%1000 == 0:
+            print 'Calculating',i,'of',num_features,'...'
         print 'generating bns_features',i,'of',num_features,'...'
         if true_pos_rate[i] != 0 and false_pos_rate[i] != 0 and true_pos_rate[i] != 1 and false_pos_rate[i] != 1:
             bns_features[i] = abs(norm.ppf(true_pos_rate[i]) - norm.ppf(false_pos_rate[i]))
@@ -62,8 +65,13 @@ def count_metrics(feature_dict, label_type, bns_filename):
     json.dump(top_features, f)
 
 if __name__ == "__main__":
-    features = load_features_and_labels("postags_features_15k.json")
-    # label_type = "is_question" 
-    label_type = "is_answerable" 
-    bns_filename = "feature_bns_scores_"+label_type+".json"
+    features = load_features_and_labels("lexical_tags_15k.json")
+    print 'getting bns scores for is_question...'
+    label_type = "is_question" 
+    bns_filename = "lexical_bns_scores_"+label_type+".json"
     count_metrics(features, label_type, bns_filename)
+    print 'getting bns scores for is_answerable...'
+    label_type = "is_answerable" 
+    bns_filename = "lexical_bns_scores_"+label_type+".json"
+    count_metrics(features, label_type, bns_filename)
+
