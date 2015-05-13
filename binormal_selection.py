@@ -28,9 +28,9 @@ def count_metrics(feature_dict, label_type, bns_filename):
     label_counts = Counter(tweet_labels)
     pos = label_counts[1]
     neg = label_counts[0]
-    print num_features
-    print pos
-    print neg
+    print 'num_features',num_features
+    print 'pos',pos
+    print 'neg',neg
 
     true_pos = defaultdict(int)
     true_neg = defaultdict(int)
@@ -41,17 +41,19 @@ def count_metrics(feature_dict, label_type, bns_filename):
     false_pos_rate = {}
 
     np_labels = np.array(tweet_labels)
-
     for i in xrange(num_features):
+        print 'Calculating',i,'of',num_features,'...'
         vals = [features[i] for features in tweet_features]
+        # print vals
         np_vals = np.array(vals)
-        true_pos[i] = sum(np.logical_and(np_vals, np_labels))
-        false_pos[i] = sum(np.logical_and(np_vals, np.logical_not(np_labels)))
+        true_pos[i] = np.sum(np.logical_and(np_vals, np_labels))
+        false_pos[i] = np.sum(np.logical_and(np_vals, np.logical_not(np_labels)))
         true_pos_rate[i] = float(true_pos[i])/pos
         false_pos_rate[i] = float(false_pos[i])/neg
 
     bns_features = {}
     for i in xrange(num_features):
+        print 'generating bns_features',i,'of',num_features,'...'
         if true_pos_rate[i] != 0 and false_pos_rate[i] != 0 and true_pos_rate[i] != 1 and false_pos_rate[i] != 1:
             bns_features[i] = abs(norm.ppf(true_pos_rate[i]) - norm.ppf(false_pos_rate[i]))
 
@@ -61,6 +63,7 @@ def count_metrics(feature_dict, label_type, bns_filename):
 
 if __name__ == "__main__":
     features = load_features_and_labels("postags_features_15k.json")
-    label_type = "is_question"
+    # label_type = "is_question" 
+    label_type = "is_answerable" 
     bns_filename = "feature_bns_scores_"+label_type+".json"
     count_metrics(features, label_type, bns_filename)
