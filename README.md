@@ -1,13 +1,10 @@
 # Project
-Text Information System (CS 410) project -
+A 2015 CS 410 - Text Information System project
 
-# Search Redefined
+Twitter promotes high interactions among users. 500 million tweets are produced per day and roughly 10% of these are questions tweeted by users.
 
-Imagine if we can change search as we know it!
+In this project we aim to identify such tweets. We focus on
+- Classifying tweets into a question and non-question.
+- Classifying question tweets into machine-answerable or not. 
 
-This is the age of information. The widespread use of social media has lead to a constant stream of real time data.
-What if search relevance can now be seen from a real time domain and then add multiple layers to it like location, interests, scope and so on? Can this lead to a new experience to the user?
-
-This is what we seek to find and determine in this project.
-
-Our motivation comes from the simple statement that "Time is relative"
+Towards this end we implemented a technique that involved data gathering, feature extraction, feature selection and training classifiers.
