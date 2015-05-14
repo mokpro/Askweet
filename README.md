@@ -7,4 +7,13 @@ In this project we aim to identify such tweets. We focus on
 - Classifying tweets into a question and non-question.
 - Classifying question tweets into machine-answerable or not. 
 
-Towards this end we implemented a technique that involved data gathering, feature extraction, feature selection and training classifiers.
+#Technique 
+
+Towards this end we implemented a technique that involvs 4 steps
+
+- Data gathering
+- Feature extraction
+- Feature selection 
+- Training classifiers
+
+Our results have been encouraging so far.
