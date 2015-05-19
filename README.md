@@ -1,4 +1,4 @@
-# Project - Phase I
+# Project - Phase 1
 A 2015 CS 410 - Text Information System project
 
 Twitter promotes high interactions among users. 500 million tweets are produced per day and roughly 10% of these are questions tweeted by users.
